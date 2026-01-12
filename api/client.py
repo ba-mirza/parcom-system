@@ -6,6 +6,9 @@ class APIClient:
     def __init__(self, base_url):
         self.base_url = base_url.rstrip('/')
 
+    def update_endpoint(self, new_base_url):
+        self.base_url = new_base_url.rstrip('/')
+
     def parse_pdf(self, pdf_path, bom_path=None, manager_path=None, bom_sheet_index=0):
         url = f"{self.base_url}/api/parse-pdf"
 

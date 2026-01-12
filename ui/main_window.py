@@ -29,7 +29,6 @@ class MainWindow(ctk.CTk):
         self.sidebar.grid(row=0, column=0, sticky="nsew")
         self.sidebar.grid_rowconfigure(6, weight=1)
 
-        # Логотип
         logo_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         logo_frame.grid(row=0, column=0, padx=th.SPACING_LG, pady=(th.SPACING_2XL, th.SPACING_XL), sticky="ew")
 
@@ -70,7 +69,7 @@ class MainWindow(ctk.CTk):
 
         ctk.CTkLabel(
             docx_frame,
-            text="📄 DOCX Templates",
+            text="📄DOCX Templates",
             font=ctk.CTkFont(size=th.FONT_SIZE_SM),
             text_color=th.TEXT_MUTED
         ).pack(anchor="w")
@@ -84,7 +83,7 @@ class MainWindow(ctk.CTk):
 
         ctk.CTkLabel(
             self.sidebar,
-            text="v1.0.0",
+            text="v1.0.2",
             font=ctk.CTkFont(size=th.FONT_SIZE_SM),
             text_color=th.TEXT_MUTED
         ).grid(row=7, column=0, padx=th.SPACING_LG, pady=(th.SPACING_MD, th.SPACING_LG), sticky="s")
@@ -116,7 +115,8 @@ class MainWindow(ctk.CTk):
 
         self.pages["settings"] = SettingsPage(
             self.content_frame,
-            config_manager=self.config_manager
+            config_manager=self.config_manager,
+            api_client=self.api_client
         )
 
         self.current_page = None
