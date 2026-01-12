@@ -3,8 +3,8 @@ name: Build Windows Executable
 on:
   push:
     tags:
-      - "v*" # Запускается при создании тега вида v1.0.0
-  workflow_dispatch: # Позволяет запустить вручную
+      - "v*" # Triggers on tags like v1.0.0
+  workflow_dispatch: # Allows manual trigger
 
 jobs:
   build-windows:
@@ -23,51 +23,93 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+        shell: cmd
 
       - name: Build executable
         run: python build.py
+        shell: cmd
+        env:
+          PYTHONIOENCODING: utf-8
+
+      - name: Verify build
+        run: |
+          if not exist "dist\ParCom_System.exe" (
+            echo ERROR: Executable not found!
+            exit /b 1
+          )
+          echo Build successful!
+        shell: cmd
 
       - name: Create Release ZIP
         run: |
           cd dist
-          Compress-Archive -Path Parcom_System.exe -DestinationPath Parcom_System_Windows.zip
+          powershell Compress-Archive -Path ParCom_System.exe -DestinationPath ParCom_System_Windows.zip
+        shell: cmd
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Parcom_System_Windows
-          path: dist/Parcom_System_Windows.zip
+          name: ParCom_System_Windows
+          path: dist/ParCom_System_Windows.zip
+          retention-days: 90
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/Parcom_System_Windows.zip
+          files: dist/ParCom_System_Windows.zip
           body: |
-            ## Parcom System - Windows Release
+            ## ParCom System - Windows Release
 
-            ### Installation:
-            1. Download `Parcom_System_Windows.zip`
-            2. Extract the ZIP file
-            3. Run `Parcom_System.exe`
+            ### Installation Instructions:
+            1. Download `ParCom_System_Windows.zip`
+            2. Extract the ZIP file to any folder
+            3. Run `ParCom_System.exe`
 
             ### Features:
             - Parse technical drawings (PDF)
-            - Validate against BOM Excel
+            - Validate against BOM Excel files
             - Compare with Order Manager
-            - Export results to Excel
+            - Export results to Excel with color coding
             - Persistent file management
             - Parsing history tracking
+            - Dark/Light theme support
 
             ### System Requirements:
-            - Windows 10/11
+            - Windows 10/11 (64-bit)
             - No Python installation required
+            - All dependencies included
 
-            ### First Run:
-            1. Launch the application
-            2. Go to Settings
-            3. Configure API endpoint
-            4. Test connection
-            5. Start parsing!
+            ### First-Time Setup:
+            1. Launch ParCom_System.exe
+            2. Go to Settings page
+            3. Configure API endpoint (default: http://localhost:8000)
+            4. Click "Test Connection" to verify
+            5. Return to Home and start parsing!
+
+            ### Quick Start:
+            1. **Pin your Excel files** (one-time):
+               - Upload BOM Excel file and click "Pin"
+               - Upload Manager Excel file and click "Pin"
+
+            2. **Parse documents**:
+               - Select PDF drawing file
+               - Choose correct BOM sheet (Foglio 1-14)
+               - Click "Parse Documents"
+
+            3. **Review results**:
+               - View statistics and material comparisons
+               - Double-click rows to change status
+               - Export to Excel with custom columns
+
+            ### Troubleshooting:
+            - If Windows Defender blocks the app, click "More info" → "Run anyway"
+            - For network issues, check your firewall settings
+            - Contact support if you encounter any problems
+
+            ---
+
+            **Version:** ${{ github.ref_name }}
+            **Build Date:** ${{ github.event.head_commit.timestamp }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
