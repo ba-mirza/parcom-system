@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+*.egg
+
+# PyInstaller
+*.spec
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Application files
+config.json
+history.json
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test files
+test*.pdf
+test*.xlsx
+parsed_result*.json
